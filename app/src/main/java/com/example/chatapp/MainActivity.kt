@@ -12,6 +12,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chatapp.ui.theme.ChatAppTheme
 
+
+sealed class Destination(var route: String) {
+
+    object SignUp : Destination("signup")
+    object LogIn : Destination("login")
+    object Profile : Destination("profile")
+    object ChatList : Destination("chatList")
+    object SingleChat : Destination("singleChat/{chatId}") {
+        fun createRoute(id: String) = "singleChat/$id"
+    }
+
+    object StatusList : Destination("statusList")
+    object SingleStatus : Destination("singleStatus/{userID}") {
+        fun createRoute(userID: String) = "singleStatus/$userID"
+    }
+}
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,10 +39,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    ChatAppNavigation()
                 }
             }
+
+
         }
+    }
+
+    @Composable
+    fun ChatAppNavigation() {
+        Text(text = "Ameen")
     }
 }
 
