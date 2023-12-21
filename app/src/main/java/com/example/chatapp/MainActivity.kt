@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatapp.Screens.LoginScreen
 import com.example.chatapp.Screens.SignUpScreen
 import com.example.chatapp.ui.theme.ChatAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 sealed class Destination(var route: String) {
 
@@ -32,6 +33,8 @@ sealed class Destination(var route: String) {
     }
 }
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
