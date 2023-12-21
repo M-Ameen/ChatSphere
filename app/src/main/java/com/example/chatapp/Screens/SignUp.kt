@@ -31,13 +31,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.chatapp.ChatViewModel
+import com.example.chatapp.CheckSignedIn
 import com.example.chatapp.Destination
+import com.example.chatapp.ProgressBar
 import com.example.chatapp.R
 import com.example.chatapp.navigateTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(navController: NavController, vm: ChatViewModel) {
+
+
+    CheckSignedIn(vm = vm, navController = navController)
+
     var nameState by remember {
         mutableStateOf(TextFieldValue())
     }
@@ -135,6 +141,9 @@ fun SignUpScreen(navController: NavController, vm: ChatViewModel) {
                         navigateTo(navController, Destination.LogIn.route)
                     })
 
+        }
+        if (vm.inProcess.value){
+            ProgressBar()
         }
     }
 }

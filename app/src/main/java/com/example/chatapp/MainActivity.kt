@@ -12,6 +12,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.chatapp.Screens.ChatListScreen
 import com.example.chatapp.Screens.LoginScreen
 import com.example.chatapp.Screens.SignUpScreen
 import com.example.chatapp.ui.theme.ChatAppTheme
@@ -65,6 +66,9 @@ class MainActivity : ComponentActivity() {
             }
             composable(Destination.LogIn.route) {
                 LoginScreen()
+            }
+            composable(Destination.ChatList.route) {
+                ChatListScreen()
             }
         }
 
