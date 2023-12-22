@@ -51,11 +51,32 @@ class ChatViewModel @Inject constructor(
                         handleException(it.exception, "SignUp Failed")
                     }
                 }
-            }else{
+            } else {
                 handleException(customMessage = "number already exists")
             }
         }
 
+    }
+
+    fun LogIn(email: String, password: String) {
+        if (email.isNullOrEmpty() or password.isNullOrEmpty()) {
+            handleException(customMessage = "Please fill all Details")
+            return
+        } else {
+            inProcess.value = true
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    signInState.value = true
+                    inProcess.value = false
+                    auth.currentUser?.uid?.let {
+                        getUserData(it)
+                    }
+
+                } else {
+                    handleException(exception = it.exception, customMessage = "LogIn Failed")
+                }
+            }
+        }
     }
 
     private fun createOrUpdateProfile(
