@@ -1,11 +1,13 @@
 package com.example.chatapp.Screens
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.google.firebase.auth.FirebaseAuth
+import androidx.navigation.NavHostController
+import com.example.chatapp.ChatViewModel
 
 @Composable
-fun ChatListScreen() {
-    Text(text = "ChatList")
+fun ChatListScreen(navController: NavHostController, vm: ChatViewModel) {
+    BottomNavigationMenu(
+        selectedItem = BottomNavigationItem.CHATLIST,
+        navController = navController
+    )
 }

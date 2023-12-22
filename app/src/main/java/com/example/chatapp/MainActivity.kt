@@ -14,7 +14,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapp.Screens.ChatListScreen
 import com.example.chatapp.Screens.LoginScreen
+import com.example.chatapp.Screens.ProfileScreen
 import com.example.chatapp.Screens.SignUpScreen
+import com.example.chatapp.Screens.StatusScreen
 import com.example.chatapp.ui.theme.ChatAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,7 +70,13 @@ class MainActivity : ComponentActivity() {
                 LoginScreen(navController, vm)
             }
             composable(Destination.ChatList.route) {
-                ChatListScreen()
+                ChatListScreen(navController, vm)
+            }
+            composable(Destination.StatusList.route) {
+                StatusScreen(navController, vm)
+            }
+            composable(Destination.Profile.route) {
+                ProfileScreen(navController, vm)
             }
         }
 
