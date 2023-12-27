@@ -1,5 +1,6 @@
 package com.example.chatapp
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -8,14 +9,17 @@ import com.example.chatapp.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
 import javax.inject.Inject
 
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     val auth: FirebaseAuth,
-    val db: FirebaseFirestore
+    val db: FirebaseFirestore,
+    val storage: FirebaseStorage
 ) : ViewModel() {
 
     var inProcess = mutableStateOf(false)
@@ -133,6 +137,32 @@ class ChatViewModel @Inject constructor(
         val message = if (customMessage.isNullOrEmpty()) errorMsg else customMessage
         eventMutableState.value = Event(message)
         inProcess.value = false
+    }
+
+    fun uploadProfileImage(uri: Uri) {
+//        uploadImage()
+
+    }
+
+    private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
+        inProcess.value = true
+
+        val storageRef = storage.reference
+        val uuid = UUID.randomUUID()
+
+        val imageRef = storageRef.child("images/$uuid")
+        val uploadTask = imageRef.putFile(uri)
+
+        uploadTask.addOnSuccessListener {
+            val result = it.metadata?.reference?.downloadUrl
+
+            result?.addOnSuccessListener(onSuccess)
+            inProcess.value = false
+        }.addOnFailureListener {
+            handleException(it)
+        }
+
+
     }
 
 }
