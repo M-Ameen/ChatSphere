@@ -140,7 +140,9 @@ class ChatViewModel @Inject constructor(
     }
 
     fun uploadProfileImage(uri: Uri) {
-//        uploadImage()
+        uploadImage(uri){
+            createOrUpdateProfile(imageUrl = it.toString())
+        }
 
     }
 
