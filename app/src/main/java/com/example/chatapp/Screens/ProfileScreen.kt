@@ -90,54 +90,54 @@ fun ProfileContent(
             Text(text = "Save", modifier = Modifier.clickable {
                 onSave.invoke()
             })
-            CommonDivider()
-            ProfileImage(imageUrl = imageUri, vm = vm)
-            CommonDivider()
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "Name", modifier = Modifier.width(100.dp))
-                TextField(
-                    value = name,
-                    onValueChange = onNameChange,
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedLabelColor = Color.Black,
-                        containerColor = Color.Transparent
-                    )
+        }
+        CommonDivider()
+        ProfileImage(imageUrl = imageUri, vm = vm)
+        CommonDivider()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Name", modifier = Modifier.width(100.dp))
+            TextField(
+                value = name,
+                onValueChange = onNameChange,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedLabelColor = Color.Black,
+                    containerColor = Color.Transparent
                 )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "Number", modifier = Modifier.width(100.dp))
-                TextField(
-                    value = number,
-                    onValueChange = onNumberChange,
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedLabelColor = Color.Black,
-                        containerColor = Color.Transparent
-                    )
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Number", modifier = Modifier.width(100.dp))
+            TextField(
+                value = number,
+                onValueChange = onNumberChange,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedLabelColor = Color.Black,
+                    containerColor = Color.Transparent
                 )
-            }
-            CommonDivider()
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = "LogOut", modifier = Modifier.clickable { onLogout.invoke() })
-            }
+            )
+        }
+        CommonDivider()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = "LogOut", modifier = Modifier.clickable { onLogout.invoke() })
         }
     }
-
 }
+
 
 @Composable
 fun ProfileImage(imageUrl: String?, vm: ChatViewModel) {
@@ -149,7 +149,7 @@ fun ProfileImage(imageUrl: String?, vm: ChatViewModel) {
             }
         }
 
-    Box(modifier = Modifier.height(intrinsicSize = IntrinsicSize.Min)) {
+    Box(modifier = Modifier.height(intrinsicSize = IntrinsicSize.Max)) {
 
         Column(
             modifier = Modifier
