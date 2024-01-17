@@ -153,7 +153,7 @@ fun ProfileImage(imageUrl: String?, vm: ChatViewModel) {
 
         Column(
             modifier = Modifier
-                .height(8.dp)
+                .height(150.dp)
                 .fillMaxWidth()
                 .clickable {
                     launcher.launch("image/*")
