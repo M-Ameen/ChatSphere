@@ -22,15 +22,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.chatapp.ChatViewModel
 import com.example.chatapp.CommonDivider
 import com.example.chatapp.CommonImage
+import com.example.chatapp.Destination
 import com.example.chatapp.ProgressBar
+import com.example.chatapp.navigateTo
 
 @Composable
 fun ProfileScreen(navController: NavHostController, vm: ChatViewModel) {
@@ -39,21 +46,30 @@ fun ProfileScreen(navController: NavHostController, vm: ChatViewModel) {
         ProgressBar()
     } else {
         Column {
+            val userData = vm.userData.value
+            var name by rememberSaveable {
+                mutableStateOf(userData?.name ?: "")
+            }
+            var number by rememberSaveable {
+                mutableStateOf(userData?.number ?: "")
+            }
             ProfileContent(
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
                     .padding(8.dp),
                 vm = vm,
-                name = "",
-                number = "",
-                onNameChange = { "" },
-                onNumberChange = { "" },
-                onBack = {},
-                onSave = {}
-            ) {
-
-            }
+                name = name,
+                number = number,
+                onNameChange = { name = it },
+                onNumberChange = { number = it },
+                onBack = { navigateTo(navController, route = Destination.ChatList.route) },
+                onSave = { vm.createOrUpdateProfile(name = name, number = number) },
+                onLogout = {
+                    vm.logout()
+                    navigateTo(navController,Destination.LogIn.route)
+                }
+            )
             BottomNavigationMenu(
                 selectedItem = BottomNavigationItem.PROFILE,
                 navController = navController

@@ -83,7 +83,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun createOrUpdateProfile(
+    fun createOrUpdateProfile(
         name: String? = null,
         number: String? = null,
         imageUrl: String? = null
@@ -100,7 +100,7 @@ class ChatViewModel @Inject constructor(
             inProcess.value = true
             db.collection(USER_NODE).document(uid).get().addOnSuccessListener {
                 if (it.exists()) {
-
+                    db.collection(USER_NODE).document(uid).update("name",userData.name,"number",userData.number,"imageUrl",userData.imageUrl)
                 } else {
                     db.collection(USER_NODE).document(uid).set(userData)
                     inProcess.value = false
@@ -165,6 +165,13 @@ class ChatViewModel @Inject constructor(
         }
 
 
+    }
+
+    fun logout() {
+        auth.signOut()
+        signInState.value=false
+        userData.value=null
+        eventMutableState.value=Event("Logged Out")
     }
 
 }
