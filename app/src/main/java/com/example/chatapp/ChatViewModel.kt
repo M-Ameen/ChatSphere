@@ -2,8 +2,10 @@ package com.example.chatapp
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.chatapp.data.ChatData
 import com.example.chatapp.data.USER_NODE
 import com.example.chatapp.data.UserData
 import com.google.firebase.auth.FirebaseAuth
@@ -26,6 +28,9 @@ class ChatViewModel @Inject constructor(
     val eventMutableState = mutableStateOf<Event<String>?>(null)
     val signInState = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
+
+    var inProcessChats = mutableStateOf(false)
+    val chats= mutableStateOf<List<ChatData>>(listOf())
 
     init {
         val currentUser = auth.currentUser
@@ -172,6 +177,10 @@ class ChatViewModel @Inject constructor(
         signInState.value=false
         userData.value=null
         eventMutableState.value=Event("Logged Out")
+    }
+
+    fun onAddChat(it: String) {
+
     }
 
 }
