@@ -2,15 +2,19 @@ package com.example.chatapp
 
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
+import com.example.chatapp.data.CHATS
 import com.example.chatapp.data.ChatData
+import com.example.chatapp.data.ChatUser
 import com.example.chatapp.data.USER_NODE
 import com.example.chatapp.data.UserData
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
@@ -30,7 +34,7 @@ class ChatViewModel @Inject constructor(
     val userData = mutableStateOf<UserData?>(null)
 
     var inProcessChats = mutableStateOf(false)
-    val chats= mutableStateOf<List<ChatData>>(listOf())
+    val chats = mutableStateOf<List<ChatData>>(listOf())
 
     init {
         val currentUser = auth.currentUser
@@ -105,7 +109,14 @@ class ChatViewModel @Inject constructor(
             inProcess.value = true
             db.collection(USER_NODE).document(uid).get().addOnSuccessListener {
                 if (it.exists()) {
-                    db.collection(USER_NODE).document(uid).update("name",userData.name,"number",userData.number,"imageUrl",userData.imageUrl)
+                    db.collection(USER_NODE).document(uid).update(
+                        "name",
+                        userData.name,
+                        "number",
+                        userData.number,
+                        "imageUrl",
+                        userData.imageUrl
+                    )
                 } else {
                     db.collection(USER_NODE).document(uid).set(userData)
                     inProcess.value = false
@@ -145,7 +156,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun uploadProfileImage(uri: Uri) {
-        uploadImage(uri){
+        uploadImage(uri) {
             createOrUpdateProfile(imageUrl = it.toString())
         }
 
@@ -174,13 +185,62 @@ class ChatViewModel @Inject constructor(
 
     fun logout() {
         auth.signOut()
-        signInState.value=false
-        userData.value=null
-        eventMutableState.value=Event("Logged Out")
+        signInState.value = false
+        userData.value = null
+        eventMutableState.value = Event("Logged Out")
     }
 
-    fun onAddChat(it: String) {
+    fun onAddChat(number: String) {
+        if (number.isNullOrEmpty() || number.isDigitsOnly()) {
+            handleException(customMessage = "Contain Image Only")
+        } else {
+            db.collection(CHATS).where(
+                Filter.or(
+                    Filter.and(
+                        Filter.equalTo("user1.number", number),
+                        Filter.equalTo("user2.number", userData.value?.number)
+                    ),
+                    Filter.and(
+                        Filter.equalTo("user1.number", userData.value?.number),
+                        Filter.equalTo("user2.number", number)
+                    )
 
+                )
+            ).get().addOnSuccessListener {
+                if (it.isEmpty) {
+                    db.collection(USER_NODE).whereEqualTo("number", number).get()
+                        .addOnSuccessListener {
+                            if (it.isEmpty) {
+                                handleException(customMessage = "No not Found")
+                            } else {
+                                val chatPartners = it.toObjects<UserData>()[0]
+                                val id = db.collection(CHATS).document().id
+                                val chat = ChatData(
+                                    chatId = id,
+                                    ChatUser(
+                                        userData.value?.userId,
+                                        userData.value?.name,
+                                        userData.value?.imageUrl,
+                                        userData.value?.number
+                                    ),
+                                    ChatUser(
+                                        chatPartners.userId,
+                                        chatPartners.name,
+                                        chatPartners.imageUrl,
+                                        chatPartners.number
+                                    )
+                                )
+                                db.collection(CHATS).document(id).set(chat)
+                            }
+                        }
+                        .addOnFailureListener{
+                            handleException(it)
+                        }
+                } else {
+                    handleException(customMessage = "Chat already exists")
+                }
+            }
+        }
     }
 
 }
