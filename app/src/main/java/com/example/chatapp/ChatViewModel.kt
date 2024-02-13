@@ -1,5 +1,6 @@
 package com.example.chatapp
 
+import android.content.ContentValues.TAG
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
@@ -212,7 +213,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun onAddChat(number: String) {
-        if (number.isNullOrEmpty() || number.isDigitsOnly()) {
+        if (number.isNullOrEmpty() || !number.isDigitsOnly()) {
             handleException(customMessage = "Contain Image Only")
         } else {
             db.collection(CHATS).where(
