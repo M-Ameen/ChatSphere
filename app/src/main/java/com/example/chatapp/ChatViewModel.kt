@@ -1,6 +1,5 @@
 package com.example.chatapp
 
-import android.content.ContentValues.TAG
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
@@ -45,23 +44,22 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun populateChat(){
-        inProcessChats.value=true
+    fun populateChat() {
+        inProcessChats.value = true
         db.collection(CHATS).where(
             Filter.or(
-                Filter.equalTo("user1.userId",userData.value?.userId),
-                Filter.equalTo("user2.userId",userData.value?.userId)
+                Filter.equalTo("user1.userId", userData.value?.userId),
+                Filter.equalTo("user2.userId", userData.value?.userId)
             )
-        ).addSnapshotListener{
-            value,error->
-            if (error!=null){
+        ).addSnapshotListener { value, error ->
+            if (error != null) {
                 handleException(error)
             }
-            if (value!=null){
-                chats.value=value.documents.mapNotNull {
+            if (value != null) {
+                chats.value = value.documents.mapNotNull {
                     it.toObject<ChatData>()
                 }
-                inProcessChats.value=false
+                inProcessChats.value = false
             }
         }
     }
@@ -252,10 +250,12 @@ class ChatViewModel @Inject constructor(
                                         chatPartners.number
                                     )
                                 )
-                                db.collection(CHATS).document(id).set(chat)
+                                if (!number.equals(userData.value?.number)) {
+                                    db.collection(CHATS).document(id).set(chat)
+                                }
                             }
                         }
-                        .addOnFailureListener{
+                        .addOnFailureListener {
                             handleException(it)
                         }
                 } else {
