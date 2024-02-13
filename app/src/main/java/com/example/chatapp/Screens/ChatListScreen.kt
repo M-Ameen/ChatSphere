@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -28,8 +30,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.chatapp.ChatViewModel
+import com.example.chatapp.CommonRow
+import com.example.chatapp.Destination
 import com.example.chatapp.ProgressBar
 import com.example.chatapp.TitleText
+import com.example.chatapp.navigateTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,6 +81,25 @@ fun ChatListScreen(navController: NavHostController, vm: ChatViewModel) {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(text = "No Chats Available")
+                        }
+                    } else {
+                        LazyColumn(modifier = Modifier.weight(1f)) {
+                            items(chats) { chat ->
+                                val chatUser = if (chat.user1.userId == userData?.userId) {
+                                    chat.user2
+                                } else {
+                                    chat.user1
+                                }
+                                CommonRow(imageUrl = chatUser.imageUrl, name = chatUser.name) {
+                                    chat.chatId?.let {
+                                        navigateTo(
+                                            navController,
+                                            Destination.SingleChat.createRoute(it)
+                                        )
+                                    }
+                                }
+
+                            }
                         }
                     }
                     BottomNavigationMenu(

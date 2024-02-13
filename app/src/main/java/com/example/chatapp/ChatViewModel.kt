@@ -44,6 +44,26 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun populateChat(){
+        inProcessChats.value=true
+        db.collection(CHATS).where(
+            Filter.or(
+                Filter.equalTo("user1.userId",userData.value?.userId),
+                Filter.equalTo("user2.userId",userData.value?.userId)
+            )
+        ).addSnapshotListener{
+            value,error->
+            if (error!=null){
+                handleException(error)
+            }
+            if (value!=null){
+                chats.value=value.documents.mapNotNull {
+                    it.toObject<ChatData>()
+                }
+                inProcessChats.value=false
+            }
+        }
+    }
 
     fun signUp(name: String, number: String, email: String, password: String) {
         inProcess.value = true
@@ -141,6 +161,7 @@ class ChatViewModel @Inject constructor(
                 var user = value.toObject<UserData>()
                 userData.value = user
                 inProcess.value = false
+                populateChat()
             }
         }
     }

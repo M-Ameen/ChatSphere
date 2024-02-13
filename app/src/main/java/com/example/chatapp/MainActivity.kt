@@ -16,6 +16,7 @@ import com.example.chatapp.Screens.ChatListScreen
 import com.example.chatapp.Screens.LoginScreen
 import com.example.chatapp.Screens.ProfileScreen
 import com.example.chatapp.Screens.SignUpScreen
+import com.example.chatapp.Screens.SingleChatScreen
 import com.example.chatapp.Screens.StatusScreen
 import com.example.chatapp.ui.theme.ChatAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,19 +65,26 @@ class MainActivity : ComponentActivity() {
         NavHost(navController = navController, startDestination = Destination.SignUp.route) {
 
             composable(Destination.SignUp.route) {
-                SignUpScreen(navController, vm)
+                SignUpScreen(navController = navController, vm = vm)
             }
             composable(Destination.LogIn.route) {
-                LoginScreen(navController, vm)
+                LoginScreen(navController = navController, vm = vm)
             }
             composable(Destination.ChatList.route) {
-                ChatListScreen(navController, vm)
+                ChatListScreen(navController = navController, vm = vm)
+            }
+            composable(Destination.SingleChat.route) {
+                val chatId = it.arguments?.getString("chatId")
+                chatId?.let {
+
+                    SingleChatScreen(navController = navController, vm = vm, chatId = chatId)
+                }
             }
             composable(Destination.StatusList.route) {
-                StatusScreen(navController, vm)
+                StatusScreen(navController = navController, vm = vm)
             }
             composable(Destination.Profile.route) {
-                ProfileScreen(navController, vm)
+                ProfileScreen(navController = navController, vm = vm)
             }
         }
 
