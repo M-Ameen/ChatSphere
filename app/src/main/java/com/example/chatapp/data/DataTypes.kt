@@ -28,3 +28,9 @@ data class ChatUser(
     var number:String?=null,
 
 )
+
+data class Message(
+    var sendBy:String?="",
+    var message:String?="",
+    var timeStamp:String?=""
+)

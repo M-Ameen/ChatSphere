@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import com.example.chatapp.data.CHATS
 import com.example.chatapp.data.ChatData
 import com.example.chatapp.data.ChatUser
+import com.example.chatapp.data.MESSAGE
+import com.example.chatapp.data.Message
 import com.example.chatapp.data.USER_NODE
 import com.example.chatapp.data.UserData
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +19,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Calendar
 import java.util.UUID
 import javax.inject.Inject
 
@@ -263,6 +266,12 @@ class ChatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onSendReply(chatID: String, message: String) {
+        val time = Calendar.getInstance().time.toString()
+        val msg = Message(userData.value?.userId, message = message, timeStamp = time)
+        db.collection(CHATS).document(chatID).collection(MESSAGE).document().set(msg)
     }
 
 }
