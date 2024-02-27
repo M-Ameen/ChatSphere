@@ -237,6 +237,8 @@ class ChatViewModel @Inject constructor(
         auth.signOut()
         signInState.value = false
         userData.value = null
+        dePopulateMessage()
+        currentChatMessageListener=null
         eventMutableState.value = Event("Logged Out")
     }
 
