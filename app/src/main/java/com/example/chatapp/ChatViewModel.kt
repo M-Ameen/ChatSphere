@@ -15,6 +15,7 @@ import com.example.chatapp.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
@@ -35,9 +36,12 @@ class ChatViewModel @Inject constructor(
     val eventMutableState = mutableStateOf<Event<String>?>(null)
     val signInState = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
-
     var inProcessChats = mutableStateOf(false)
     val chats = mutableStateOf<List<ChatData>>(listOf())
+    val chatMessages = mutableStateOf<List<Message>>(listOf())
+    val inProcessChatMessage = mutableStateOf(false)
+    var currentChatMessageListener: ListenerRegistration? = null
+
 
     init {
         val currentUser = auth.currentUser
@@ -45,6 +49,29 @@ class ChatViewModel @Inject constructor(
         currentUser?.uid?.let {
             getUserData(it)
         }
+    }
+
+    fun populateMessages(chatID: String) {
+        inProcessChatMessage.value = true
+        currentChatMessageListener = db.collection(CHATS).document(chatID).collection(MESSAGE)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    handleException(error)
+                }
+                if (value != null) {
+                    chatMessages.value = value.documents.mapNotNull {
+                        it.toObject<Message>()
+                    }.sortedBy { it.timeStamp }
+                    inProcessChatMessage.value = false
+                }
+
+            }
+
+    }
+
+    fun dePopulateMessage() {
+        chatMessages.value = listOf()
+        currentChatMessageListener = null
     }
 
     fun populateChat() {
