@@ -84,6 +84,7 @@ class ChatViewModel @Inject constructor(
             Filter.or(
                 Filter.equalTo("user1.userId", userData.value?.userId),
                 Filter.equalTo("user2.userId", userData.value?.userId)
+
             )
         ).addSnapshotListener { value, error ->
             if (error != null) {
