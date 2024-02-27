@@ -73,7 +73,7 @@ fun StatusScreen(navController: NavHostController, vm: ChatViewModel) {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Text(text = "No Statuses Avaialble")
+                            Text(text = "No Statuses Available")
                         }
                     } else {
                         if (myStatuses.isNotEmpty()) {

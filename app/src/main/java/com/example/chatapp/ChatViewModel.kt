@@ -10,6 +10,7 @@ import com.example.chatapp.data.ChatData
 import com.example.chatapp.data.ChatUser
 import com.example.chatapp.data.MESSAGE
 import com.example.chatapp.data.Message
+import com.example.chatapp.data.STATUS
 import com.example.chatapp.data.Status
 import com.example.chatapp.data.USER_NODE
 import com.example.chatapp.data.UserData
@@ -194,6 +195,7 @@ class ChatViewModel @Inject constructor(
                 userData.value = user
                 inProcess.value = false
                 populateChat()
+                populateStatuses()
             }
         }
     }
@@ -307,8 +309,63 @@ class ChatViewModel @Inject constructor(
     }
 
     fun uploadStatus(it: Uri) {
+        uploadImage(it) {
+            createStatus(it.toString())
+        }
 
+    }
 
+    fun createStatus(imageUrl: String) {
+        val newStatus = Status(
+            ChatUser(
+                userData.value?.userId,
+                userData.value?.name,
+                userData.value?.imageUrl,
+                userData.value?.number
+            ), imageUrl = imageUrl, System.currentTimeMillis()
+        )
+        db.collection(STATUS).document().set(newStatus)
+    }
+
+    fun populateStatuses() {
+        val timeDelta = 24L * 60 * 60 * 1000
+        val cutOff = System.currentTimeMillis() - timeDelta
+        inProgressStatus.value = true
+        db.collection(CHATS).where(
+            Filter.or(
+                Filter.equalTo("user1.userId", userData.value?.userId),
+                Filter.equalTo("user2.userId", userData.value?.userId)
+            )
+        ).addSnapshotListener { value, error ->
+            if (error != null) {
+                handleException(error)
+            }
+            if (value != null) {
+                val currentConnections = arrayListOf(userData.value?.userId)
+                val chats = value.toObjects<ChatData>()
+                chats.forEach { chat ->
+                    if (chat.user1.userId == userData.value?.userId) {
+                        currentConnections.add(chat.user2.userId)
+                    } else {
+                        currentConnections.add(chat.user1.userId)
+
+                    }
+                    db.collection(STATUS).whereGreaterThan("timestamp", cutOff)
+                        .whereIn("user.userId", currentConnections)
+                        .addSnapshotListener { value, error ->
+                            if (error != null) {
+                                handleException(error)
+                            }
+                            if (value != null) {
+                                status.value = value.toObjects()
+                                inProgressStatus.value = false
+                            }
+                        }
+
+                }
+
+            }
+        }
     }
 
 }

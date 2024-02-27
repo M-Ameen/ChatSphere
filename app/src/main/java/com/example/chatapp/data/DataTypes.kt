@@ -39,5 +39,5 @@ data class Message(
 data class Status(
     var user: ChatUser = ChatUser(),
     var imageUrl: String? = "",
-    var timeStamp: String? = ""
+    var timeStamp: Long? = null
 )
