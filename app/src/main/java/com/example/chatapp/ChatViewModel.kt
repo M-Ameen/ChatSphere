@@ -10,6 +10,7 @@ import com.example.chatapp.data.ChatData
 import com.example.chatapp.data.ChatUser
 import com.example.chatapp.data.MESSAGE
 import com.example.chatapp.data.Message
+import com.example.chatapp.data.Status
 import com.example.chatapp.data.USER_NODE
 import com.example.chatapp.data.UserData
 import com.google.firebase.auth.FirebaseAuth
@@ -42,6 +43,8 @@ class ChatViewModel @Inject constructor(
     val inProcessChatMessage = mutableStateOf(false)
     var currentChatMessageListener: ListenerRegistration? = null
 
+    val status = mutableStateOf<List<Status>>(listOf())
+    val inProgressStatus = mutableStateOf(false)
 
     init {
         val currentUser = auth.currentUser
@@ -238,7 +241,7 @@ class ChatViewModel @Inject constructor(
         signInState.value = false
         userData.value = null
         dePopulateMessage()
-        currentChatMessageListener=null
+        currentChatMessageListener = null
         eventMutableState.value = Event("Logged Out")
     }
 
@@ -301,6 +304,11 @@ class ChatViewModel @Inject constructor(
         val time = Calendar.getInstance().time.toString()
         val msg = Message(userData.value?.userId, message = message, timeStamp = time)
         db.collection(CHATS).document(chatID).collection(MESSAGE).document().set(msg)
+    }
+
+    fun uploadStatus(it: Uri) {
+
+
     }
 
 }
