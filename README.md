@@ -27,14 +27,12 @@ The app is inspired by the walkthrough provided in the YouTube video [here](http
   </tr>
 </table>
 
-
-
-
 ## Specifications
 Android only for the moment.
-minSdkVersion 26
-targetSdkVersion 34
-applicationId "com.example.chatapp"
+- LogIn: Users can log in to their accounts.
+- minSdkVersion 26
+- targetSdkVersion 34
+- applicationId "com.example.chatapp"
 
 ## Contributing
 You have ideas on how to improve this app and want to make it even better? Feel free to contribute by submitting ideas, adding missing translations, or even checking out the project and implementing the changes yourself. You can build the app like any other normal Android project by using Android Studio.
