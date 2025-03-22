@@ -92,7 +92,8 @@ class MainActivity : ComponentActivity() {
                 userId.let {
                     SingleStatusScreen(
                         navController = navController,
-                        vm = vm
+                        vm = vm,
+                        userId=it
                     )
                 }
             }
